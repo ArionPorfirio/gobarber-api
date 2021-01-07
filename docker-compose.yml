@@ -24,7 +24,6 @@ services:
     networks:
       - api_net
     environment:
-      - POSTGRESQL_USERNAME=docker
       - POSTGRESQL_PASSWORD=postgres
       - POSTGRESQL_DATABASE=gobarber
 

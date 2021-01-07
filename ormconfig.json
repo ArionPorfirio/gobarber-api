@@ -2,9 +2,10 @@
   "type": "postgres",
   "host": "sqldb",
   "port": 5432,
-  "username": "docker",
+  "username": "postgres",
   "password": "postgres",
   "database": "gobarber",
+  "entities": ["./src/models/*.ts"],
   "migrations": ["./src/database/migrations/*.ts"],
   "cli": {
     "migrationsDir": "./src/database/migrations"
