@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import User from '../models/Users';
 import CreateUsersService from '../services/CreateUsersService';
 
 const usersRouter = Router();
@@ -9,13 +10,15 @@ usersRouter.post('/', async (request, response) => {
 
     const createUserService = new CreateUsersService();
 
-    const createUser = await createUserService.execute({
+    const user: Partial<User> = await createUserService.execute({
       name,
       email,
       password,
     });
 
-    return response.status(201).json(createUser);
+    delete user.password;
+
+    return response.status(201).json(user);
   } catch (err) {
     return response
       .status(400)
