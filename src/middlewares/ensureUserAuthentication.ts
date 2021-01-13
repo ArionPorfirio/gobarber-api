@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
 import auth from '../config/auth';
+import AppError from '../errors/AppError';
 
 interface TokenPayload {
   iat: number;
@@ -16,7 +17,7 @@ export default function (
   const { authorization } = request.headers;
 
   if (!authorization) {
-    throw new Error('JSON Web Token is missing');
+    throw new AppError('JSON Web Token is missing', 401);
   }
 
   const [, token] = authorization.split(' ');
@@ -31,6 +32,6 @@ export default function (
 
     next();
   } catch {
-    throw new Error('Invalid JSON Web Token');
+    throw new AppError('Invalid JSON Web Token', 401);
   }
 }

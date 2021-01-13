@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { getRepository } from 'typeorm';
 import uploadConfig from '../config/upload';
+import AppError from '../errors/AppError';
 import User from '../models/Users';
 
 interface Request {
@@ -16,7 +17,7 @@ class UpdateUserAvatarService {
     const user = await usersRepository.findOne(user_id);
 
     if (!user) {
-      throw new Error('User must be logged in for update avatar');
+      throw new AppError('User must be logged in for update avatar');
     }
 
     if (user.avatar) {
