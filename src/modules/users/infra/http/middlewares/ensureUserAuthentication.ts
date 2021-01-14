@@ -1,7 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
+
 import { verify } from 'jsonwebtoken';
-import auth from '../config/auth';
-import AppError from '../errors/AppError';
+
+import authConfig from '@config/auth';
+
+import AppError from '@shared/errors/AppError';
 
 interface TokenPayload {
   iat: number;
@@ -22,7 +25,7 @@ export default function (
 
   const [, token] = authorization.split(' ');
 
-  const { secret } = auth.jwt;
+  const { secret } = authConfig.jwt;
 
   try {
     const parsedToken = verify(token, secret);

@@ -27,6 +27,44 @@
         "ts": "never"
       }
     ],
+    "import/order": [
+      "error",
+      {
+        "pathGroupsExcludedImportTypes": ["builtin"],
+        "pathGroups": [
+          {
+            "pattern": "@config/**",
+            "group": "external",
+            "position": "after"
+          },
+          {
+            "pattern": "@modules/**",
+            "group": "external",
+            "position": "after"
+          },
+          {
+            "pattern": "@shared/**",
+            "group": "external",
+            "position": "after"
+          }
+        ],
+        "groups": [
+          "builtin",
+          "internal",
+          "external",
+          "parent",
+          "sibling",
+          "index",
+          "object",
+          "unknown"
+        ],
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc" /* sort in ascending order. Options: ['ignore', 'asc', 'desc'] */,
+          "caseInsensitive": true /* ignore case. Options: [true, false] */
+        }
+      }
+    ],
     "prettier/prettier": "error",
     "class-methods-use-this": "off",
     "camelcase": "off",
