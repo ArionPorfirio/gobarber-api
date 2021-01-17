@@ -6,7 +6,7 @@ import authConfig from '@config/auth';
 
 import AppError from '@shared/errors/AppError';
 
-interface TokenPayload {
+interface ITokenPayload {
   iat: number;
   exp: number;
   sub: string;
@@ -29,7 +29,7 @@ export default function (
 
   try {
     const parsedToken = verify(token, secret);
-    const { sub } = parsedToken as TokenPayload;
+    const { sub } = parsedToken as ITokenPayload;
 
     request.user = { id: sub };
 

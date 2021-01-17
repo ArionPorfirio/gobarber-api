@@ -1,11 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 
-import { getRepository } from 'typeorm';
+import { injectable, inject } from 'tsyringe';
 
 import uploadConfig from '@config/upload';
 
 import User from '@modules/users/infra/typeorm/entities/Users';
+import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 
 import AppError from '@shared/errors/AppError';
 
@@ -14,11 +15,15 @@ interface IRequest {
   avatarFileName: string;
 }
 
+@injectable()
 class UpdateUserAvatarService {
-  public async execute({ user_id, avatarFileName }: IRequest): Promise<User> {
-    const usersRepository = getRepository(User);
+  constructor(
+    @inject('UsersRepository')
+    private usersRepository: IUsersRepository,
+  ) {}
 
-    const user = await usersRepository.findOne(user_id);
+  public async execute({ user_id, avatarFileName }: IRequest): Promise<User> {
+    const user = await this.usersRepository.findById(user_id);
 
     if (!user) {
       throw new AppError('User must be logged in for update avatar');
@@ -35,9 +40,7 @@ class UpdateUserAvatarService {
 
     user.avatar = avatarFileName;
 
-    await usersRepository.save(user);
-
-    return user;
+    return this.usersRepository.save(user);
   }
 }
 
