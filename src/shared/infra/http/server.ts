@@ -1,10 +1,9 @@
 import 'reflect-metadata';
 
 import express, { NextFunction, Request, Response } from 'express';
-import 'express-async-error';
+import 'express-async-errors';
 
 import '@shared/infra/typeorm';
-
 import uploadConfig from '@config/upload';
 
 import AppError from '@shared/errors/AppError';
@@ -29,7 +28,7 @@ app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
 
   return response.status(500).json({
     status: 'error',
-    message: 'Unknow server error',
+    message: 'Unknown server error',
   });
 });
 
