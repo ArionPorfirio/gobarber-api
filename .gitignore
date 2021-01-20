@@ -1,6 +1,6 @@
 node_modules
 dist
-postgres_data
+coverage
 
 tmp/*
 !tmp/.gitkeep
