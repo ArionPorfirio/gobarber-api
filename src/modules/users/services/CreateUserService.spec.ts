@@ -4,44 +4,44 @@ import CreateUsersService from '@modules/users/services/CreateUsersService';
 
 import AppError from '@shared/errors/AppError';
 
-describe('CreateUser', () => {
-  it('should be able to create a new user', async () => {
-    const fakeUsersRepository = new FakeUsersRepository();
-    const fakeHashProvider = new FakeHashProvider();
-    const createUserService = new CreateUsersService(
-      fakeUsersRepository,
-      fakeHashProvider,
-    );
+let fakeUsersRepository: FakeUsersRepository;
+let fakeHashProvider: FakeHashProvider;
+let createUser: CreateUsersService;
 
-    const userData = {
+describe('CreateUser', () => {
+  beforeEach(() => {
+    fakeUsersRepository = new FakeUsersRepository();
+    fakeHashProvider = new FakeHashProvider();
+    createUser = new CreateUsersService(fakeUsersRepository, fakeHashProvider);
+  });
+
+  it('should be able to create a new user', async () => {
+    const user = await createUser.execute({
       name: 'John Doe',
       email: 'johndoe@gmail.com',
       password: '123456',
-    };
+    });
 
-    const user = await createUserService.execute(userData);
-
-    expect(user).toMatchObject(userData);
+    expect(user).toMatchObject({
+      name: 'John Doe',
+      email: 'johndoe@gmail.com',
+      password: '123456',
+    });
   });
 
   it('should NOT be able to create users with same email', async () => {
-    const fakeUsersRepository = new FakeUsersRepository();
-    const fakeHashProvider = new FakeHashProvider();
-    const createUserService = new CreateUsersService(
-      fakeUsersRepository,
-      fakeHashProvider,
-    );
-
-    const userData = {
+    await createUser.execute({
       name: 'John Doe',
       email: 'johndoe@gmail.com',
       password: '123456',
-    };
+    });
 
-    await createUserService.execute(userData);
-
-    await expect(createUserService.execute(userData)).rejects.toBeInstanceOf(
-      AppError,
-    );
+    await expect(
+      createUser.execute({
+        name: 'John Doe',
+        email: 'johndoe@gmail.com',
+        password: '123456',
+      }),
+    ).rejects.toBeInstanceOf(AppError);
   });
 });

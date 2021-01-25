@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 
 import { container } from 'tsyringe';
 
-import User from '@modules/users/infra/typeorm/entities/Users';
+import User from '@modules/users/infra/typeorm/entities/User';
 import CreateUsersService from '@modules/users/services/CreateUsersService';
 
 class UsersController {

@@ -6,19 +6,24 @@ import CreateAppointmentService from '@modules/appointments/services/CreateAppoi
 
 import AppError from '@shared/errors/AppError';
 
+let fakeAppointmentsRepository: FakeAppointmentsRepository;
+let createAppointment: CreateAppointmentService;
+
 describe('CreateAppointment', () => {
-  it('should be able to create a new appointment', async () => {
-    const fakeAppointmentsRepository = new FakeAppointmentsRepository();
-    const createAppointmentService = new CreateAppointmentService(
+  beforeEach(() => {
+    fakeAppointmentsRepository = new FakeAppointmentsRepository();
+    createAppointment = new CreateAppointmentService(
       fakeAppointmentsRepository,
     );
+  });
 
+  it('should be able to create a new appointment', async () => {
     const appointmentData = {
       provider_id: uuid(),
       date: new Date(),
     };
 
-    const appointment = await createAppointmentService.execute(appointmentData);
+    const appointment = await createAppointment.execute(appointmentData);
 
     expect(appointment).toMatchObject({
       ...appointmentData,
@@ -27,20 +32,15 @@ describe('CreateAppointment', () => {
   });
 
   it('should NOT be able to create appointments in the same time', async () => {
-    const fakeAppointmentsRepository = new FakeAppointmentsRepository();
-    const createAppointmentService = new CreateAppointmentService(
-      fakeAppointmentsRepository,
-    );
-
     const appointmentData = {
       provider_id: uuid(),
       date: new Date(2021, 0, 19, 13),
     };
 
-    await createAppointmentService.execute(appointmentData);
+    await createAppointment.execute(appointmentData);
 
     await expect(
-      createAppointmentService.execute(appointmentData),
+      createAppointment.execute(appointmentData),
     ).rejects.toBeInstanceOf(AppError);
   });
 });

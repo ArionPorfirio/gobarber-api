@@ -1,53 +1,44 @@
 import FakeHashProvider from '@modules/users/providers/HashProvider/fakes/FakeHashProvider';
 import FakeUsersRepository from '@modules/users/repositories/fakes/FakeUsersRepository';
 import AuthenticateUserService from '@modules/users/services/AuthenticateUserService';
-import CreateUsersService from '@modules/users/services/CreateUsersService';
 
 import AppError from '@shared/errors/AppError';
 
+let fakeUsersRepository: FakeUsersRepository;
+let fakeHashProvider: FakeHashProvider;
+let authenticateUser: AuthenticateUserService;
+
 describe('AuthenticateUser', () => {
-  it('should be able to authenticate a user', async () => {
-    const fakeUsersRepository = new FakeUsersRepository();
-    const fakeHashProvider = new FakeHashProvider();
-    const createUserService = new CreateUsersService(
+  beforeEach(() => {
+    fakeUsersRepository = new FakeUsersRepository();
+    fakeHashProvider = new FakeHashProvider();
+    authenticateUser = new AuthenticateUserService(
       fakeUsersRepository,
       fakeHashProvider,
     );
+  });
 
-    const userData = {
+  it('should be able to authenticate a user', async () => {
+    await fakeUsersRepository.create({
       name: 'John Doe',
       email: 'johndoe@gmail.com',
       password: '123456',
-    };
+    });
 
-    await createUserService.execute(userData);
-
-    const authenticateUserService = new AuthenticateUserService(
-      fakeUsersRepository,
-      fakeHashProvider,
-    );
-
-    const authentication = await authenticateUserService.execute({
-      email: userData.email,
-      password: userData.password,
+    const authentication = await authenticateUser.execute({
+      email: 'johndoe@gmail.com',
+      password: '123456',
     });
 
     expect(authentication).toHaveProperty('token');
     expect(authentication).toHaveProperty('user.id');
-    expect(authentication).toHaveProperty('user.name', userData.name);
-    expect(authentication).toHaveProperty('user.email', userData.email);
+    expect(authentication).toHaveProperty('user.name', 'John Doe');
+    expect(authentication).toHaveProperty('user.email', 'johndoe@gmail.com');
   });
 
   it('should NOT be able user authentication with invalid email', async () => {
-    const fakeUsersRepository = new FakeUsersRepository();
-    const fakeHashProvider = new FakeHashProvider();
-    const authenticateUserService = new AuthenticateUserService(
-      fakeUsersRepository,
-      fakeHashProvider,
-    );
-
     await expect(
-      authenticateUserService.execute({
+      authenticateUser.execute({
         email: 'wrongjohnemail@gmail.com',
         password: '123456',
       }),
@@ -55,29 +46,15 @@ describe('AuthenticateUser', () => {
   });
 
   it('should NOT be able user authentication with invalid password', async () => {
-    const fakeUsersRepository = new FakeUsersRepository();
-    const fakeHashProvider = new FakeHashProvider();
-    const createUserService = new CreateUsersService(
-      fakeUsersRepository,
-      fakeHashProvider,
-    );
-
-    const userData = {
+    await fakeUsersRepository.create({
       name: 'John Doe',
       email: 'johndoe@gmail.com',
       password: '123456',
-    };
-
-    await createUserService.execute(userData);
-
-    const authenticateUserService = new AuthenticateUserService(
-      fakeUsersRepository,
-      fakeHashProvider,
-    );
+    });
 
     await expect(
-      authenticateUserService.execute({
-        email: userData.email,
+      authenticateUser.execute({
+        email: 'johndoe@gmail.com',
         password: 'wrongjohnpassword',
       }),
     ).rejects.toBeInstanceOf(AppError);
