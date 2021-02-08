@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 
+import { classToClass } from 'class-transformer';
 import { container } from 'tsyringe';
 
-import User from '@modules/users/infra/typeorm/entities/User';
 import AuthenticateUserService from '@modules/users/services/AuthenticateUserService';
 
 class SessionsController {
@@ -11,20 +11,12 @@ class SessionsController {
 
     const authenticateUserService = container.resolve(AuthenticateUserService);
 
-    const {
-      user,
-      token,
-    }: {
-      user: Partial<User>;
-      token: string;
-    } = await authenticateUserService.execute({
+    const { user, token } = await authenticateUserService.execute({
       email,
       password,
     });
 
-    delete user.password;
-
-    return response.json({ user, token });
+    return response.json({ user: classToClass(user), token });
   }
 }
 

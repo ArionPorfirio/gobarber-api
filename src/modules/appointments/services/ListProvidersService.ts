@@ -1,3 +1,4 @@
+import { classToClass } from 'class-transformer';
 import { inject, injectable } from 'tsyringe';
 
 import User from '@modules/users/infra/typeorm/entities/User';
@@ -19,7 +20,7 @@ class ListProvidersService {
       except_user_id,
     });
 
-    return providers;
+    return classToClass(providers);
   }
 }
 

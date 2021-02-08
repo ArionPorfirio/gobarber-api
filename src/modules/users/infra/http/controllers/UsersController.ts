@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 
+import { classToClass } from 'class-transformer';
 import { container } from 'tsyringe';
 
-import User from '@modules/users/infra/typeorm/entities/User';
 import CreateUsersService from '@modules/users/services/CreateUsersService';
 
 class UsersController {
@@ -11,15 +11,13 @@ class UsersController {
 
     const createUserService = container.resolve(CreateUsersService);
 
-    const user: Partial<User> = await createUserService.execute({
+    const user = await createUserService.execute({
       name,
       email,
       password,
     });
 
-    delete user.password;
-
-    return response.status(201).json(user);
+    return response.status(201).json(classToClass(user));
   }
 }
 

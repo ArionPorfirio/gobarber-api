@@ -6,6 +6,7 @@ services:
     command: yarn dev:server
     depends_on:
       - sqldb
+      - mongodb
     ports:
       - '3333:3333'
     user: node
@@ -26,6 +27,17 @@ services:
     environment:
       - POSTGRESQL_PASSWORD=postgres
       - POSTGRESQL_DATABASE=gobarber
+
+  mongodb:
+    image: bitnami/mongodb:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - /var/lib/mongodb:/bitnami/mongodb
+    networks:
+      - api_net
+    environment:
+      - MONGODB_ROOT_PASSWORD=mongobarber
 
 networks:
   api_net:
