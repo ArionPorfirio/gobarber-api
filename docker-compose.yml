@@ -7,6 +7,7 @@ services:
     depends_on:
       - sqldb
       - mongodb
+      - rediscache
     ports:
       - '3333:3333'
     user: node
@@ -38,6 +39,15 @@ services:
       - api_net
     environment:
       - MONGODB_ROOT_PASSWORD=mongobarber
+
+  rediscache:
+    image: bitnami/redis:latest
+    ports:
+      - '6379:6379'
+    networks:
+      - api_net
+    environment:
+      - 'REDIS_PASSWORD=${REDIS_PASS}'
 
 networks:
   api_net:
